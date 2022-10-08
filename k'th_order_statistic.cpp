@@ -8,37 +8,35 @@ bool isMoreDefault(const T& left, const T& right) {
 
 template <typename T>
 int partition(T* arr, int left, int right, bool(*isMore)(const T&, const T&) = isMoreDefault) {
-	int n = right - left + 1;
-	if (n > 2)
+	int length = right - left + 1;
+	if (length > 2)
 		swap(arr[rand() % (right - 1) + left], arr[right]);
-	int pivot = arr[right];
+	T pivot = arr[right];
 	int i = 0, j = 0;
 	while (j < right) {
-		if (!isMore(arr[j], pivot)){
-	    	swap(arr[i], arr[j]);
-			i++;
-		}
-    j++;
+		if (!isMore(arr[j], pivot))
+			swap(arr[i++], arr[j]);
+    	++j;
 	}
 	swap(arr[right], arr[i]);
 	return i;
 }
 
 template <class T>
-T KStat(T* arr, int l, int r, int k, bool(*isMore)(const T&, const T&) = isMoreDefault) {
-	int pivotPos = partition(arr, l, r, isMore);
+T KStat(T* arr, int left, int right, int k, bool(*isMore)(const T&, const T&) = isMoreDefault) {
+	int pivotPos = partition(arr, left, right, isMore);
 	while (pivotPos != k) {
 		if (k < pivotPos)
-			r = pivotPos - 1;
+			right = pivotPos - 1;
 		else
-			l = pivotPos + 1;
-		pivotPos = partition(arr, l, r, isMore);
+			left = pivotPos + 1;
+		pivotPos = partition(arr, left, right, isMore);
 	}
 	return arr[k];
 }
 
 int main() {
-	int n;
+	int n = 0;
 	cin >> n;
 	int* arr = new int[n];
 	for (int i = 0; i < n; ++i)
