@@ -9,7 +9,7 @@ bool isMoreDefault(const T& left, const T& right) {
 template <typename T>
 int partition(T* arr, int left, int right, bool(*isMore)(const T&, const T&) = isMoreDefault) {
 	int length = right - left + 1;
-  srand( (unsigned)time(NULL) );
+  	srand((unsigned)time(NULL));
 	if (length > 2)
 		swap(arr[rand() % (right - left) + left], arr[right]);
 	T pivot = arr[right];
