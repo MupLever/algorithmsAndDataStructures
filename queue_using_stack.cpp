@@ -1,12 +1,15 @@
 #include <iostream>
+#include <cassert>
 class Stack {
 public:
     Stack();
+    Stack(const Stack&) = delete;
+    Stack& operator=(const Stack&) = delete;
     ~Stack() { delete [] buffer; }
     bool is_empty() { return head == size; }
     void push(int value);    
     int pop();
-    void print();
+    // void print();
 
 private:
     void grow();
@@ -27,11 +30,9 @@ void Stack::push(int value) {
 }
 
 int Stack::pop() {
-    if (!is_empty()) {
-        return buffer[head++];
-    } else {
-        return -1;
-    }
+    assert(!is_empty());
+    return buffer[head++];
+
 }
 
 void Stack::grow() {
@@ -45,30 +46,33 @@ void Stack::grow() {
     buffer = tmp_buffer;
     this->size = tmp_size;
 }
-void Stack::print() {
-    for (int i = 0; i < this->size; ++i ) {
-        std::cout << buffer[i] << ' ';
-    }
-}
+// void Stack::print() {
+//     for (int i = 0; i < this->size; ++i ) {
+//         std::cout << buffer[i] << ' ';
+//     }
+// }
 
 class Queue {
 public:
+    Queue(){};
+    Queue(const Queue&) = delete;
+    Queue& operator=(const Queue&) = delete;
     void push_back(int value);
     int pop_front();
-    void print();
+    bool is_empty() { return first_stack.is_empty() && second_stack.is_empty(); }
+    // void print();
 private:
-    int size = 0;
     Stack first_stack, second_stack;
 };
 
 void Queue::push_back(int value) {
     first_stack.push(value);
 }
-void Queue::print() {
-    while(!second_stack.is_empty()) {
-        std::cout << second_stack.pop() << ' ';
-    }
-}
+// void Queue::print() {
+//     while(!second_stack.is_empty()) {
+//         std::cout << second_stack.pop() << ' ';
+//     }
+// }
 int Queue::pop_front() {
         if (second_stack.is_empty()) {
             while(!first_stack.is_empty()) {
@@ -89,8 +93,7 @@ int main() {
             queue.push_back(value);
         } else if (code == 2) {
             std::cin >> value;
-            if (value != queue.pop_front())
-                flag = true;
+                flag = flag && (queue.is_empty() ? value == -1 : value == queue.pop_front());
         }
     }
     if (flag)
