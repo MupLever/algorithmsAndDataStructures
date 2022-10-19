@@ -5,16 +5,23 @@ public:
     Node():identify(0), traffic(0) {}
     Node(int Identify, int Traffic):identify(Identify), traffic(Traffic) {}
     Node(const Node& obj);
-    void Init(int id, int traffic);
-    int getTraffic() const { return this->traffic; }
+    Node& operator=(const Node& obj);
+    void init(int id, int traffic);
+    int getTraffic() const { return traffic; }
     friend std::ostream & operator<<(std::ostream &out, Node obj);
 private:
     int identify;
     int traffic;
 };
-void Node::Init(int id, int traffic) {
-        identify = id;
-        this->traffic = traffic;
+
+Node& Node::operator=(const Node& obj) {
+    this->identify = obj.identify;
+    this->traffic = obj.traffic;
+    return *this;
+}
+void Node::init(int _identify, int _traffic) {
+        identify = _identify;
+        traffic = _traffic;
     }
 Node::Node(const Node& obj) {
     this->identify = obj.identify;
@@ -26,234 +33,50 @@ std::ostream & operator<<(std::ostream &out, Node obj) {
     return out;
 }
 
-template<class T>
-class MyHeap {
-public:
-    MyHeap(T *arr, int size, int k, bool (*IsMore)(const T&, const T&));
-    MyHeap();
-    ~MyHeap();
-    T extractMax();
-    void insert(T val);
-    void print();
-    void partialSort();
-private:
-    void grow();
-    void swap(T *a, T *b);
-    void SiftUp(int i);
-    void SiftDown(int i);
-    bool isMoreDefault(const T& left, const T& right);
-    bool (*isMore)(const T&, const T&);
-
-    int heapSize, realSize, k;
-    T *heap;
-};
-
 template <class T>
 bool isMoreDefault(const T& left, const T& right) {
-	return left < right;
+    return left < right;
 }
-template<class T>
-MyHeap<T>::MyHeap(T *arr, int size, int k, bool (*IsMore)(const T&, const T&)) {
-    isMore = IsMore;
-    this->k = k;
-    this->heapSize = size;
-    this->realSize = size;
-    int i;
-    this->heap = new T[size];
-    for (i = 0; i < size; ++i) 
-        heap[i] = arr[i];
-    for (i = (size >> 1) - 1; i >= 0; --i) {
-        SiftDown(i);
-    }
-}
-template<class T>
-MyHeap<T>::MyHeap() {
-    this->isMore = this->isMoreDefault;
-    this->heapSize = 10;
-    this->realSize = 0;
-    this->k = 10;
-    heap = new T[heapSize];
-}
-template<class T>
-MyHeap<T>::~MyHeap(){
-  delete [] heap;
-}
-template<class T>
-void MyHeap<T>::grow() {
-    int heapSize = realSize * 2;
-    T *new_heap = new T [heapSize];
-    for (int i = 0; i < realSize; ++i) {
-        new_heap[i] = heap[i];
-    }
-    delete [] heap;
-    heap = new_heap;
-}
-template<class T>
-void MyHeap<T>::partialSort() {
-    for (int i = 0; i < k; ++i) {
-        heap[realSize] = extractMax();
-    }
-}
-template<class T>
-void MyHeap<T>::insert(T val) {
-    if (realSize >= heapSize)
-        grow();
-    heap[realSize++] = val;
-    SiftUp(realSize - 1);
-}
-
-template<class T>
-T MyHeap<T>::extractMax() {
-    T tmpNode = heap[0];
-    heap[0] = heap[--realSize];
-    SiftDown(0);
-    return tmpNode;
-}
-template<class T>
-void MyHeap<T>::SiftUp(int i) {
-    bool stop = false;
-    while (!stop && i > 1) {
-        int parent = (i - 1) / 2;
-        if(isMore(heap[i], heap[parent])) {
-            swap(&heap[i], &heap[parent]);
-            i = parent;
-        } else {
-            stop = true;
-        }
-        
-    }
-}
-template<class T>
-void MyHeap<T>::SiftDown(int i) {
-    int j;
-    while (2 * i + 1 <= realSize) {
-        j = -1;
-        int left = 2 * i + 1;
-        int right = 2 * i + 2;
-        if (isMore(heap[left], heap[i])) 
-            j = left;
-        if (right <= realSize && isMore(heap[right], heap[i]) && (j == -1 || isMore(heap[right], heap[left])))
-            j = right;
-        if (j == -1) break;
-        swap(&heap[i], &heap[j]);
-        i = j;
-    }
-}
-template<class T>
-void MyHeap<T>::print() {
-    for (int i = 0; i < k - 1; ++i)
-        std::cout << heap[realSize + i] << ' ';
-	std::cout << heap[realSize + k - 1];
-}
-template<class T>
-void MyHeap<T>::swap(T *a, T *b) {
-    T tmp = *a;
-    *a = *b;
-    *b = tmp;
-}
-bool isMore(const Node& val1, const Node& val2) {
-  return val1.getTraffic() > val2.getTraffic();
-}
-int main() {
-    int n = 0, k = 0, i, id, traffic;
-    std:: cin >> n >> k;
-    Node* arrayNodes = new Node [n];
-    for (i = 0; i < n; ++i) {
-        std::cin >> id >> traffic;
-        arrayNodes[i].Init(id, traffic);
-    }
-    MyHeap<Node> heap(arrayNodes, n, k, isMore);
-    heap.partialSort();
-    heap.print();
-    delete [] arrayNodes;
-    return 0;
-}
-
-
-
-/* 
-#include <iostream>
-
-class Node {
-    public:
-    Node():identify(0), traffic(0) {}
-    Node(int identify, int traffic) {
-        this->identify = identify;
-        this->traffic = traffic;
-    }
-    Node(const Node& obj) {
-        this->identify = obj.identify;
-        this->traffic = obj.traffic;
-    }
-    void Init(int id, int traffic) {
-        identify = id;
-        this->traffic = traffic;
-    }
-    int getTraffic() const { return this->traffic; }
-    friend std::ostream & operator<<(std::ostream &out, Node obj);
-private:
-    int identify;
-    int traffic;
-};
-
-std::ostream & operator<<(std::ostream &out, Node obj) {
-    out << obj.identify;
-    return out;
+bool isMoreTraffic(const Node& left, const Node& right) {
+  return left.getTraffic() < right.getTraffic();
 }
 
 template<class T>
 class MyHeap {
 public:
-    MyHeap(T *arr, int size, bool (*IsMore)(const T&, const T&));
-    MyHeap(int size, bool (*IsMore)(const T&, const T&));
-    MyHeap();
+    MyHeap(const T *arr, const int size, bool (*isMore)(const T&, const T&) = isMoreDefault);
+    MyHeap() = delete;
+    MyHeap(const MyHeap&) = delete;
+    MyHeap& operator=(const MyHeap&) = delete;
     ~MyHeap();
-    T extractMax();
-    void insert(T val);
-    void printHeap();
+    T extractMin();
+    T getMin() { return heap[0]; };
+    void insert(const T& val);
+    void print();
+    void sort();
 private:
     void grow();
     void swap(T *a, T *b);
-    void SiftUp(int i);
-    void SiftDown(int i);
-    bool isMoreDefault(const T& left, const T& right);
+    void siftUp(int i);
+    void siftDown(int i);
     bool (*isMore)(const T&, const T&);
-
     int heapSize, realSize;
     T *heap;
 };
 
-template <class T>
-bool isMoreDefault(const T& left, const T& right) {
-	return left < right;
-}
 template<class T>
-MyHeap<T>::MyHeap(T *arr, int size, bool (*IsMore)(const T&, const T&)) {
+MyHeap<T>::MyHeap(const T *arr, const int size, bool (*IsMore)(const T&, const T&)) {
     isMore = IsMore;
-    this->heapSize = size;
-    this->realSize = size;
+    heapSize = size;
+    realSize = size;
     int i;
-    this->heap = new T[size];
-    for (i = 0; i < size; ++i) 
+    heap = new T[size];
+    for (i = 0; i < size; ++i)
         heap[i] = arr[i];
-    for (i = (size >> 1) - 1; i >= 0; --i) {
-        SiftDown(i);
-    }
+    for (int i = size / 2 - 1; i >= 0; i--)
+            siftDown(i);
 }
-template<class T>
-MyHeap<T>::MyHeap() {
-    this->isMore = this->isMoreDefault;
-    this->heapSize = 10;
-    this->realSize = 0;
-    heap = new T[heapSize];
-}
-template<class T>
-MyHeap<T>::MyHeap(int size, bool (*IsMore)(const T&, const T&)) {
-    isMore = IsMore;
-    this->heapSize = size;
-    this->realSize = 0;
-    heap = new T[heapSize];
-}
+
 template<class T>
 MyHeap<T>::~MyHeap(){
   delete [] heap;
@@ -261,31 +84,37 @@ MyHeap<T>::~MyHeap(){
 template<class T>
 void MyHeap<T>::grow() {
     int heapSize = realSize * 2;
-    T *new_heap = new T [heapSize];
+    T *newHeap = new T [heapSize];
     for (int i = 0; i < realSize; ++i) {
-        new_heap[i] = heap[i];
+        newHeap[i] = heap[i];
     }
     delete [] heap;
-    heap = new_heap;
+    heap = newHeap;
 }
 template<class T>
-void MyHeap<T>::insert(T val){
+void MyHeap<T>::insert(const T& val) {
     if (realSize >= heapSize)
         grow();
     heap[realSize++] = val;
-    SiftUp(realSize - 1);
-
+    siftUp(realSize - 1);
 }
 
 template<class T>
-T MyHeap<T>::extractMax() {
+T MyHeap<T>::extractMin() {
     T tmpNode = heap[0];
-    heap[0] = heap[realSize--];
-    SiftDown(0);
+    heap[0] = heap[--realSize];
+    siftDown(0);
     return tmpNode;
 }
+
 template<class T>
-void MyHeap<T>::SiftUp(int i) {
+void MyHeap<T>::sort() {
+    for (int i = 0; i < realSize - 1; ++i) {
+        heap[realSize] = extractMin();
+    }
+}
+template<class T>
+void MyHeap<T>::siftUp(int i) {
     bool stop = false;
     while (!stop && i > 1) {
         int parent = (i - 1) / 2;
@@ -295,59 +124,57 @@ void MyHeap<T>::SiftUp(int i) {
         } else {
             stop = true;
         }
-        
     }
 }
 template<class T>
-void MyHeap<T>::SiftDown(int i) {
+void MyHeap<T>::siftDown(int i) {
     int j;
-    while (2 * i + 1 <= realSize) {
+    while (2 * i + 1 < realSize) {
         j = -1;
         int left = 2 * i + 1;
-        int right = 2 * i + 2;
-        if (isMore(heap[left], heap[i])) 
+        int right = left + 1;
+        if (isMore(heap[left], heap[i]))
             j = left;
-        if (right <= realSize && isMore(heap[right], heap[i]) && (j == -1 || isMore(heap[right], heap[left])))
+        if (right < realSize && isMore(heap[right], heap[i]) && (j == -1 || isMore(heap[right], heap[left])))
             j = right;
         if (j == -1) break;
         swap(&heap[i], &heap[j]);
         i = j;
     }
 }
-template<class T>
-void MyHeap<T>::printHeap() {
-    for (int i = 0; i < realSize; ++i) 
-        std::cout << heap[i];
-}
+
 template<class T>
 void MyHeap<T>::swap(T *a, T *b) {
     T tmp = *a;
     *a = *b;
     *b = tmp;
 }
-bool isMore(const Node& val1, const Node& val2) {
-  return val1.getTraffic() > val2.getTraffic();
+template<class T>
+void MyHeap<T>::print() {
+    for (int i = 0; i < realSize - 1; ++i)
+        std::cout << heap[i] << ' ';
+    std::cout << heap[realSize - 1];
 }
+
 int main() {
     int n = 0, k = 0, i, id, traffic;
     std:: cin >> n >> k;
     Node* arrayNodes = new Node [n];
     for (i = 0; i < n; ++i) {
         std::cin >> id >> traffic;
-        arrayNodes[i].Init(id, traffic);
+        arrayNodes[i].init(id, traffic);
     }
-    MyHeap<Node> heap(arrayNodes, n, isMore);
-    Node* tmpBuffer = new Node [k];
-    for (i = k - 1; i >= 0; --i) {
-      tmpBuffer[i] = heap.extractMax();
+    MyHeap<Node> heap(arrayNodes, k, isMoreTraffic);
+    for (i = k; i < n; ++i) {
+        if (isMoreTraffic(heap.getMin(), arrayNodes[i])) {
+            heap.extractMin();
+            heap.insert(arrayNodes[i]);
+        }
     }
     for (i = 0; i < k - 1; ++i) {
-      std::cout<< tmpBuffer[i] << ' ';
+            std::cout << heap.extractMin() << ' ';
     }
-    std::cout<< tmpBuffer[k - 1];
+    std::cout << heap.extractMin();
     delete [] arrayNodes;
-    delete [] tmpBuffer;
     return 0;
 }
-
-*/
