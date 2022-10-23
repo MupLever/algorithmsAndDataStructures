@@ -53,7 +53,6 @@ public:
     T getMin() { return heap[0]; };
     void insert(const T& val);
     void print();
-    void sort();
 private:
     void grow();
     void swap(T *a, T *b);
@@ -107,12 +106,6 @@ T MyHeap<T>::extractMin() {
     return tmpNode;
 }
 
-template<class T>
-void MyHeap<T>::sort() {
-    for (int i = 0; i < realSize - 1; ++i) {
-        heap[realSize] = extractMin();
-    }
-}
 template<class T>
 void MyHeap<T>::siftUp(int i) {
     bool stop = false;

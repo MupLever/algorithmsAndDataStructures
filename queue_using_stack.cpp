@@ -9,7 +9,6 @@ public:
     bool is_empty() { return head == size; }
     void push(int value);    
     int pop();
-    // void print();
 
 private:
     void grow();
@@ -46,11 +45,6 @@ void Stack::grow() {
     buffer = tmp_buffer;
     this->size = tmp_size;
 }
-// void Stack::print() {
-//     for (int i = 0; i < this->size; ++i ) {
-//         std::cout << buffer[i] << ' ';
-//     }
-// }
 
 class Queue {
 public:
@@ -60,7 +54,6 @@ public:
     void push_back(int value);
     int pop_front();
     bool is_empty() { return first_stack.is_empty() && second_stack.is_empty(); }
-    // void print();
 private:
     Stack first_stack, second_stack;
 };
@@ -68,11 +61,7 @@ private:
 void Queue::push_back(int value) {
     first_stack.push(value);
 }
-// void Queue::print() {
-//     while(!second_stack.is_empty()) {
-//         std::cout << second_stack.pop() << ' ';
-//     }
-// }
+
 int Queue::pop_front() {
         if (second_stack.is_empty()) {
             while(!first_stack.is_empty()) {
