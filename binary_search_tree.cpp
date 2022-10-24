@@ -2,6 +2,110 @@
 using namespace std;
 
 template<class T>
+class Queue {
+private:
+	struct Node {
+		Node* next;
+		T data;
+		Node(const T& _data) : data(_data), next(nullptr) {}
+	};
+public:
+	Queue() : size(0), head(nullptr) {}
+	~Queue() { clear(); }
+	T popFront();
+	void pushBack(const T& data);
+	void clear();
+  bool isEmpty() { return size == 0; }
+	int getSize() { return size; }
+	int size;
+	Node *head;
+};
+
+template<class T>
+T Queue<T>::popFront() {
+	Node *temp = head;
+  T resultData = head->data;
+	head = head->next;
+	--size;
+    delete temp;
+  return resultData;
+}
+
+template<class T>
+void Queue<T>::pushBack(const T& data) {
+	if (head == nullptr) {
+		head = new Node(data);
+	} else {
+		Node *current = this->head;
+		while (current->next != nullptr) {
+			current = current->next;
+		}
+		current->next = new Node(data);
+	}
+	++size;
+}
+
+template<class T>
+void Queue<T>::clear() {
+	while (size) {
+		popFront();
+	}
+}
+
+template<class T>
+class Stack {
+private:
+	struct Node {
+		Node* next;
+		T data;
+		Node(const T& _data) : data(_data), next(nullptr) {}
+	};
+public:
+	Stack() : head(nullptr) {}
+	~Stack() { clear(); }
+	T pop();
+	void push(const T& data);
+	void clear();
+    bool isEmpty() { return head == nullptr; }
+	Node *head;
+};
+
+
+template<class T>
+T Stack<T>::pop() {
+	Node *temp = head;
+    T resultData = head->data;
+	head = head->next;
+    delete temp;
+    return resultData;
+}
+
+template<class T>
+void Stack<T>::push(const T& data) {
+	if (head == nullptr) {
+		head = new Node(data);
+	} else {
+		Node *current = new Node(data);
+        current->next = head;
+        head = current;
+	}
+}
+
+template<class T>
+void Stack<T>::clear() {
+    Node* temp = head;
+	while (head != nullptr) {
+		temp = head;
+        head = head->next;
+        delete temp;
+	}
+}
+
+bool isMoreDefault(const int& left, const int& right) {
+  return left < right;
+}
+
+template<class T>
 class MyMap {
 public:
     MyMap(bool (*isMore)(const T&, const T&) = isMoreDefault);
@@ -13,23 +117,14 @@ public:
     void postOrder();
     void levelOrder();
 private:
-    template<class T>
-    class Node {
-    public:
-    Node(T data = T(), Node *left = nullptr, Node *right = nullptr) {
-        this->data = data;
-        this->left = left;
-        this->right = right;
-    }
-    Node(const Node& obj) = delete;
-    Node& operator=(const Node& obj) = delete;
+    struct Node {
+      Node(const T _data) : data(_data), left(nullptr), right (nullptr) {}
         Node* left;
         Node* right;
         T data;
     };
     bool (*isMore)(const T&, const T&);
-    Node<T>* root;
-    
+    Node* root;
 };
 
 
@@ -39,22 +134,21 @@ MyMap<T>::MyMap(bool (*IsMore)(const T&, const T&)) {
   root = nullptr;
 }
 
-
 template<class T>
-void MyMap<T>::insert(const T& item) {
+void MyMap<T>::insert(const T& data) {
   if (root == nullptr) {
-    root = new Node<T>(item);
+    root = new Node(data);
   } else {
-    Node<T>* node = root;
-    while (node->item != item) {
-        if (isMore(item, node->item))
+    Node* node = root;
+    while (node->data != data) {
+        if (isMore(node->data, data))
             if (node->right == nullptr)
-                node->right = new Node<T>(item);
+                node->right = new Node(data);
             else
                 node = node->right;
         else
             if (node->left == nullptr)
-                node->left = new Node<T>(item);
+                node->left = new Node(data);
             else
                 node = node->left;
     }
@@ -63,38 +157,26 @@ void MyMap<T>::insert(const T& item) {
 
 template<class T>
 void MyMap<T>::inOrder() {
-    if (root != nullptr){
-        inOrder(root->left);
-        std::cout << root->item;
-        inOrder(root->right);
-    }
+  //implement
 }
 
 template<class T>
 void MyMap<T>::preOrder() {
-    if (root != nullptr) {
-        std::cout << root->item;
-        preOrder(root->left);
-        preOrder(root->right);
-    }
+  //implement
 }
 
 template<class T>
 void MyMap<T>::postOrder() {
-    if (root != nullptr) {
-        postOrder(root->right);
-        postOrder(root->left);
-        std::cout << root->item;
-    }
+  //implement
 }
 
 template<class T>
 void MyMap<T>::levelOrder() {
-    Queue<Node<int>> queue;
-    queue.push_back(root);
-    while (!queue.empty()) {
-        Node<T>* node = queue.popFront();
-        std::cout << node->data;
+    Queue<Node*> queue;
+    queue.pushBack(root);
+    while (!queue.isEmpty()) {
+        Node* node = queue.popFront();
+        std::cout << node->data << std::endl;
         if (node->left != nullptr)
             queue.pushBack(node->left);
         if (node->right != nullptr)
@@ -103,5 +185,13 @@ void MyMap<T>::levelOrder() {
 }
 
 int main() {
+  MyMap<int> map;
+  map.insert(5);
+  map.insert(10);
+  map.insert(3);
+  map.insert(2);
+  map.insert(1);
+  map.insert(4);
+  map.levelOrder();
   return 0;
 }
