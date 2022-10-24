@@ -1,5 +1,4 @@
 #include <iostream>
-using namespace std;
 
 template<class T>
 class Queue {
@@ -11,6 +10,8 @@ private:
     };
 public:
     Queue() : size(0), head(nullptr) {}
+    Queue(const Queue&) = delete;
+    Queue& operator=(const Queue&) = delete;
     ~Queue() { clear(); }
     T popFront();
     void pushBack(const T& data);
@@ -63,6 +64,8 @@ private:
 public:
     Stack() : head(nullptr) {}
     ~Stack() { clear(); }
+    Stack(const Stack&) = delete;
+    Stack& operator=(const Stack&) = delete;
     T pop();
     void push(const T& data);
     void clear();
@@ -161,7 +164,16 @@ void MyMap<T>::inOrder() {
 
 template<class T>
 void MyMap<T>::preOrder() {
-  //implement
+    Stack<Node*> stack;
+    stack.push(root);
+    while (!stack.isEmpty()) {
+        Node* node = stack.pop();
+        std::cout << node->data << std::endl;
+        if (node->right != nullptr)
+            stack.push(node->right);
+        if (node->left != nullptr)
+            stack.push(node->left);
+    }
 }
 
 template<class T>
@@ -185,12 +197,11 @@ void MyMap<T>::levelOrder() {
 
 int main() {
     MyMap<int> map;
-    map.insert(5);
-    map.insert(10);
     map.insert(3);
-    map.insert(2);
     map.insert(1);
     map.insert(4);
+    map.insert(2);
+    map.preOrder();
     map.levelOrder();
     return 0;
 }
