@@ -4,68 +4,68 @@ using namespace std;
 template<class T>
 class Queue {
 private:
-	struct Node {
-		Node* next;
-		T data;
-		Node(const T& _data) : data(_data), next(nullptr) {}
-	};
+    struct Node {
+        Node* next;
+        T data;
+        Node(const T& _data) : data(_data), next(nullptr) {}
+    };
 public:
-	Queue() : size(0), head(nullptr) {}
-	~Queue() { clear(); }
-	T popFront();
-	void pushBack(const T& data);
-	void clear();
-  bool isEmpty() { return size == 0; }
-	int getSize() { return size; }
-	int size;
-	Node *head;
+    Queue() : size(0), head(nullptr) {}
+    ~Queue() { clear(); }
+    T popFront();
+    void pushBack(const T& data);
+    void clear();
+    bool isEmpty() { return size == 0; }
+    int getSize() { return size; }
+    int size;
+    Node *head;
 };
 
 template<class T>
 T Queue<T>::popFront() {
-	Node *temp = head;
-  T resultData = head->data;
-	head = head->next;
-	--size;
+    Node *temp = head;
+    T resultData = head->data;
+    head = head->next;
+    --size;
     delete temp;
-  return resultData;
+    return resultData;
 }
 
 template<class T>
 void Queue<T>::pushBack(const T& data) {
-	if (head == nullptr) {
-		head = new Node(data);
-	} else {
-		Node *current = this->head;
-		while (current->next != nullptr) {
-			current = current->next;
-		}
-		current->next = new Node(data);
-	}
-	++size;
+    if (head == nullptr) {
+        head = new Node(data);
+    } else {
+        Node *current = this->head;
+        while (current->next != nullptr) {
+          current = current->next;
+        }
+        current->next = new Node(data);
+    }
+    ++size;
 }
 
 template<class T>
 void Queue<T>::clear() {
-	while (size) {
-		popFront();
-	}
+    while (size) {
+        popFront();
+    }
 }
 
 template<class T>
 class Stack {
 private:
 	struct Node {
-		Node* next;
-		T data;
-		Node(const T& _data) : data(_data), next(nullptr) {}
+        Node* next;
+        T data;
+        Node(const T& _data) : data(_data), next(nullptr) {}
 	};
 public:
-	Stack() : head(nullptr) {}
-	~Stack() { clear(); }
-	T pop();
-	void push(const T& data);
-	void clear();
+    Stack() : head(nullptr) {}
+    ~Stack() { clear(); }
+    T pop();
+    void push(const T& data);
+    void clear();
     bool isEmpty() { return head == nullptr; }
 	Node *head;
 };
@@ -82,27 +82,27 @@ T Stack<T>::pop() {
 
 template<class T>
 void Stack<T>::push(const T& data) {
-	if (head == nullptr) {
-		head = new Node(data);
-	} else {
-		Node *current = new Node(data);
+    if (head == nullptr) {
+        head = new Node(data);
+    } else {
+        Node *current = new Node(data);
         current->next = head;
         head = current;
-	}
+    }
 }
 
 template<class T>
 void Stack<T>::clear() {
     Node* temp = head;
-	while (head != nullptr) {
-		temp = head;
+    while (head != nullptr) {
+        temp = head;
         head = head->next;
         delete temp;
-	}
+    }
 }
 
 bool isMoreDefault(const int& left, const int& right) {
-  return left < right;
+    return left < right;
 }
 
 template<class T>
@@ -118,7 +118,7 @@ public:
     void levelOrder();
 private:
     struct Node {
-      Node(const T _data) : data(_data), left(nullptr), right (nullptr) {}
+        Node(const T _data) : data(_data), left(nullptr), right (nullptr) {}
         Node* left;
         Node* right;
         T data;
@@ -130,29 +130,28 @@ private:
 
 template<class T>
 MyMap<T>::MyMap(bool (*IsMore)(const T&, const T&)) {
-  isMore = IsMore;
-  root = nullptr;
+    isMore = IsMore;
+    root = nullptr; 
 }
 
 template<class T>
 void MyMap<T>::insert(const T& data) {
-  if (root == nullptr) {
-    root = new Node(data);
-  } else {
-    Node* node = root;
-    while (node->data != data) {
-        if (isMore(node->data, data))
-            if (node->right == nullptr)
-                node->right = new Node(data);
-            else
-                node = node->right;
-        else
-            if (node->left == nullptr)
+    if (root == nullptr) {
+        root = new Node(data);
+    } else {
+        Node* node = root;
+        while (node->data != data) {
+            if (isMore(node->data, data))
+                if (node->right == nullptr)
+                    node->right = new Node(data);
+                else
+                    node = node->right;
+            else if (node->left == nullptr)
                 node->left = new Node(data);
             else
                 node = node->left;
+        }
     }
-  }
 }
 
 template<class T>
@@ -185,13 +184,13 @@ void MyMap<T>::levelOrder() {
 }
 
 int main() {
-  MyMap<int> map;
-  map.insert(5);
-  map.insert(10);
-  map.insert(3);
-  map.insert(2);
-  map.insert(1);
-  map.insert(4);
-  map.levelOrder();
-  return 0;
+    MyMap<int> map;
+    map.insert(5);
+    map.insert(10);
+    map.insert(3);
+    map.insert(2);
+    map.insert(1);
+    map.insert(4);
+    map.levelOrder();
+    return 0;
 }
