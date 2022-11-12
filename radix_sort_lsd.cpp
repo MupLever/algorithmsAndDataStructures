@@ -10,7 +10,7 @@ public:
     }
 };
 template<class T>
-void radixSort(T* array, int size, int digit, const GetKey& getKey) {
+void sortByKey(T* array, int size, int digit, const GetKey& getKey) {
     int i;
     T max = getKey(array[0], digit);
 
@@ -36,15 +36,20 @@ void radixSort(T* array, int size, int digit, const GetKey& getKey) {
     delete [] arrCount;
     delete [] tmpArray;
 }
+template<class T>
+void RadixSortLsd(T* array, int size, const GetKey& getKey) {
+    for (int i = 0; i < 8; ++i)
+        sortByKey(array, size, i, getKey);
+}
+
 int main() {
     GetKey getKey;
     int size;
     std::cin >> size;
     long long *array = new long long[size];
-      for (int i = 0; i < size; ++i)
+    for (int i = 0; i < size; ++i)
         std::cin >> array[i];
-    for (int i = 0; i < 8; ++i)
-      radixSort(array, size, i, getKey);
+    RadixSortLsd(array, size, getKey);
     for (int i = 0; i < size; ++i)
         std::cout << array[i] << ' ';
     delete [] array;

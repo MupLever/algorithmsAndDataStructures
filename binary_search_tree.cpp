@@ -197,11 +197,12 @@ void MyMap<T>::levelOrder() {
 
 int main() {
     MyMap<int> map;
-    map.insert(3);
-    map.insert(1);
-    map.insert(4);
-    map.insert(2);
+    int size, data;
+    std::cin >> size;
+    for (int i = 0; i < size; ++i) {
+        std::cin >> data;
+        map.insert(data);
+    }
     map.preOrder();
-    map.levelOrder();
     return 0;
 }
