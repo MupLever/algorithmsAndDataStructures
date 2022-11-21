@@ -108,12 +108,17 @@ bool isMoreDefault(const int& left, const int& right) {
     return left < right;
 }
 
+template <class T>
+void coutDefault(const T& item) {
+	std::cout << item << " ";
+}
 template<class T>
 class MyMap {
 public:
     MyMap(bool (*isMore)(const T&, const T&) = isMoreDefault);
     MyMap(const MyMap&) = delete;
     MyMap& operator=(const MyMap&) = delete;
+    ~MyMap();
     void insert(const T& item);
     void inOrder();
     void preOrder();
@@ -130,6 +135,22 @@ private:
     Node* root;
 };
 
+template<class T>
+MyMap<T>::~MyMap() {
+    if (root == nullptr)
+		return;
+	Queue<Node*> queue;
+	queue.pushBack(root);
+
+	while (!queue.isEmpty()) {
+		Node* current = queue.popFront();
+		if (current->left != nullptr)
+			queue.pushBack(current->left);
+		if (current->right != nullptr)
+			queue.pushBack(current->right);
+		delete current;
+	}
+}
 
 template<class T>
 MyMap<T>::MyMap(bool (*IsMore)(const T&, const T&)) {
@@ -163,12 +184,12 @@ void MyMap<T>::inOrder() {
 }
 
 template<class T>
-void MyMap<T>::preOrder() {
+void MyMap<T>::preOrder(void (*visit)(const T& data)) {
     Stack<Node*> stack;
     stack.push(root);
     while (!stack.isEmpty()) {
         Node* node = stack.pop();
-        std::cout << node->data << std::endl;
+        visit(node->data);
         if (node->right != nullptr)
             stack.push(node->right);
         if (node->left != nullptr)
@@ -182,12 +203,12 @@ void MyMap<T>::postOrder() {
 }
 
 template<class T>
-void MyMap<T>::levelOrder() {
+void MyMap<T>::levelOrder(void (*visit)(const T& data)) {
     Queue<Node*> queue;
     queue.pushBack(root);
     while (!queue.isEmpty()) {
         Node* node = queue.popFront();
-        std::cout << node->data << std::endl;
+        visit(node->data);
         if (node->left != nullptr)
             queue.pushBack(node->left);
         if (node->right != nullptr)
@@ -203,6 +224,6 @@ int main() {
         std::cin >> data;
         map.insert(data);
     }
-    map.preOrder();
+    map.levelOrder(coutDefault);
     return 0;
 }
