@@ -9,6 +9,7 @@ public:
         return static_cast<long long>(key & 255);
     }
 };
+
 template<class T>
 void sortByKey(T* array, int size, int digit, const GetKey& getKey) {
     int i;

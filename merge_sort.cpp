@@ -62,11 +62,11 @@ int i = 0; int j = 0;
     }
     if (i == leftArrSize){
         for (;j < rightArrSize; ++j) {
-            resultArr[i+j] = rightArr[j];
+            resultArr[i + j] = rightArr[j];
         }
     } else {
         for (;i < leftArrSize; ++i) {
-            resultArr[i+j] = leftArr[i];
+            resultArr[i + j] = leftArr[i];
         }
     }
 }
@@ -86,7 +86,7 @@ void mergeSort(T* array, int arraySize, bool (isLess)(const T&, const T&) = isLe
 }
 
 Consumer* withoutRepeatOut(Consumer* srcArr, int srcSize, Consumer* dstArr, int& dstSize, int& dstBuf) {
-	for (int i = 0; i < srcSize - 1; i++) {
+	for (int i = 0; i < srcSize - 1; ++i) {
 		if (srcArr[i].getOutTime() != srcArr[i + 1].getOutTime()) {
 			if (dstSize == dstBuf)
 				dstArr = growBuffer(dstArr, dstBuf);
@@ -105,7 +105,7 @@ int countAdds(Consumer* array, int size) {
 	for (int i = 1; i < size; i++)
 		if (array[i].getInTime() <= lastAdd) {
 			if (array[i].getInTime() > preLastAdd) {
-				preLastAdd = lastAdd;countAdds
+				preLastAdd = lastAdd;
 				lastAdd = array[i].getOutTime();
 				++cnt;
 			}
@@ -123,7 +123,7 @@ int main() {
 	int in = 0, out = 0;
 	std::cin >> n;
 	Consumer* array = new Consumer[n];
-	for (int i = 0; i < n; i++) {
+	for (int i = 0; i < n; ++i) {
 		std::cin >> in >> out;
 		array[i].init(in, out);
 	}

@@ -16,8 +16,9 @@ int partition(T* arr, int left, int right, bool(*isMore)(const T&, const T&) = i
 	int i = 0, j = 0;
 	while (j < right) {
 		if (!isMore(arr[j], pivot))
-			swap(arr[i++], arr[j]);
-    	++j;
+			swap(arr[i], arr[j]);
+			++i;
+		++j;
 	}
 	swap(arr[right], arr[i]);
 	return i;

@@ -51,6 +51,7 @@ private:
 
     const T& kStat(int K, Node<T>* node);
 };
+
 template<class T>
 void AVLTree<T>::deleteTree(Node<T>* node) {
 	if (node) {
@@ -79,6 +80,7 @@ void AVLTree<T>::fixCount(Node<T>* node) {
 	int countRight = getCount(node->right);
 	node->count = (countLeft + countRight + 1);
 }
+
 template<class T>
 Node<T>* AVLTree<T>::rotateRight(Node<T>* node) {
     Node<T>* temp = node->left;
@@ -104,6 +106,7 @@ Node<T>* AVLTree<T>::rotateLeft(Node<T>* node) {
     fixCount(temp);
     return temp;
 }
+
 template<class T>
 Node<T>* AVLTree<T>::balance(Node<T>* node) {
 	fixHeight(node);
@@ -165,6 +168,7 @@ Node<T>* AVLTree<T>::del(Node<T>* node, T key) {
 
 	return balance(node);
 }
+
 template <class T>
 Node<T>* AVLTree<T>::findRemoveMin(Node<T>* node, Node<T>*&min) {
 	if (!node->left) {
@@ -175,6 +179,7 @@ Node<T>* AVLTree<T>::findRemoveMin(Node<T>* node, Node<T>*&min) {
 	min->right = balance(node); // уже спустились до самого левого элемента, а значит min != NULL
 	return min->right;
 }
+
 template<class T>
 void AVLTree<T>::levelOrder() {
     if (root == nullptr)

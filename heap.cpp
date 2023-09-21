@@ -34,17 +34,18 @@ std::ostream & operator<<(std::ostream &out, Node obj) {
 }
 
 template <class T>
-bool isMoreDefault(const T& left, const T& right) {
+bool isLessDefault(const T& left, const T& right) {
     return left < right;
 }
-bool isMoreTraffic(const Node& left, const Node& right) {
+
+bool isLessTraffic(const Node& left, const Node& right) {
   return left.getTraffic() < right.getTraffic();
 }
 
 template<class T>
 class MyHeap {
 public:
-    MyHeap(const T *arr, const int size, bool (*isMore)(const T&, const T&) = isMoreDefault);
+    MyHeap(const T *arr, const int size, bool (*isLess)(const T&, const T&) = isLessDefault);
     MyHeap() = delete;
     MyHeap(const MyHeap&) = delete;
     MyHeap& operator=(const MyHeap&) = delete;
@@ -58,14 +59,14 @@ private:
     void swap(T *a, T *b);
     void siftUp(int i);
     void siftDown(int i);
-    bool (*isMore)(const T&, const T&);
+    bool (*isLess)(const T&, const T&);
     int heapSize, realSize;
     T *heap;
 };
 
 template<class T>
-MyHeap<T>::MyHeap(const T *arr, const int size, bool (*IsMore)(const T&, const T&)) {
-    isMore = IsMore;
+MyHeap<T>::MyHeap(const T *arr, const int size, bool (*isLess)(const T&, const T&)) {
+    isLess = isLess;
     heapSize = size;
     realSize = size;
     int i;
@@ -73,13 +74,14 @@ MyHeap<T>::MyHeap(const T *arr, const int size, bool (*IsMore)(const T&, const T
     for (i = 0; i < size; ++i)
         heap[i] = arr[i];
     for (int i = size / 2 - 1; i >= 0; i--)
-            siftDown(i);
+        siftDown(i);
 }
 
 template<class T>
 MyHeap<T>::~MyHeap(){
   delete [] heap;
 }
+
 template<class T>
 void MyHeap<T>::grow() {
     int heapSize = realSize * 2;
@@ -90,6 +92,7 @@ void MyHeap<T>::grow() {
     delete [] heap;
     heap = newHeap;
 }
+
 template<class T>
 void MyHeap<T>::insert(const T& val) {
     if (realSize >= heapSize)
@@ -111,7 +114,7 @@ void MyHeap<T>::siftUp(int i) {
     bool stop = false;
     while (!stop && i > 1) {
         int parent = (i - 1) / 2;
-        if(isMore(heap[i], heap[parent])) {
+        if(isLess(heap[i], heap[parent])) {
             swap(&heap[i], &heap[parent]);
             i = parent;
         } else {
@@ -119,6 +122,7 @@ void MyHeap<T>::siftUp(int i) {
         }
     }
 }
+
 template<class T>
 void MyHeap<T>::siftDown(int i) {
     int j;
@@ -126,9 +130,9 @@ void MyHeap<T>::siftDown(int i) {
         j = -1;
         int left = 2 * i + 1;
         int right = left + 1;
-        if (isMore(heap[left], heap[i]))
+        if (isLess(heap[left], heap[i]))
             j = left;
-        if (right < realSize && isMore(heap[right], heap[i]) && (j == -1 || isMore(heap[right], heap[left])))
+        if (right < realSize && isLess(heap[right], heap[i]) && (j == -1 || isLess(heap[right], heap[left])))
             j = right;
         if (j == -1) break;
         swap(&heap[i], &heap[j]);
@@ -142,6 +146,7 @@ void MyHeap<T>::swap(T *a, T *b) {
     *a = *b;
     *b = tmp;
 }
+
 template<class T>
 void MyHeap<T>::print() {
     for (int i = 0; i < realSize - 1; ++i)
@@ -157,9 +162,9 @@ int main() {
         std::cin >> id >> traffic;
         arrayNodes[i].init(id, traffic);
     }
-    MyHeap<Node> heap(arrayNodes, k, isMoreTraffic);
+    MyHeap<Node> heap(arrayNodes, k, isLessTraffic);
     for (i = k; i < n; ++i) {
-        if (isMoreTraffic(heap.getMin(), arrayNodes[i])) {
+        if (isLessTraffic(heap.getMin(), arrayNodes[i])) {
             heap.extractMin();
             heap.insert(arrayNodes[i]);
         }
